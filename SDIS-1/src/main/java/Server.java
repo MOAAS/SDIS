@@ -7,14 +7,28 @@ import java.util.HashMap;
 public class Server {
     static HashMap<String, String> DNSTable = new HashMap<>();
     static final String IP_NOT_FOUND = "NOT_FOUND";
+    static final String INVALID_MSG = "INVALID_MSG";
 
     public static void main(String[] args) throws IOException {
-        DatagramPacket packet = Server.makeEmptyPacket();
-        DatagramSocket socket = new DatagramSocket(6969, InetAddress.getByName("localhost"));
+        int serverPort = 6969;
 
-        while (loopCondition()) {
-            socket.receive(packet);
-            SuperUtils.printPacket(packet);
+        DatagramPacket messagePacket = SuperUtils.makeEmptyPacket();
+        DatagramSocket socket = new DatagramSocket(serverPort, InetAddress.getByName("localhost"));
+
+        while (true) {
+            SuperUtils.clearPacket(messagePacket);
+            socket.receive(messagePacket);
+            String message = SuperUtils.packetToString(messagePacket);
+            String response = processMessage(message);
+
+            DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length, messagePacket.getAddress(), messagePacket.getPort());
+            socket.send(responsePacket);
+
+            System.out.println("Got message: \"" + message + "\" --> " + response);
+          //  System.out.println("MESSAGE: " + message);
+          //  System.out.println("RESPONSE: " + response);
+          //  System.out.println("Addr: " + messagePacket.getAddress());
+          //  System.out.println("Port: " + messagePacket.getPort());
 
         }
 
@@ -22,15 +36,32 @@ public class Server {
 
     }
 
-    static DatagramPacket makeEmptyPacket() {
-        return new DatagramPacket(new byte[65535], 65535);
+    private static String processMessage(String message) {
+        String[] words = message.toUpperCase().split(" ");
+        if (words.length == 0)
+            return INVALID_MSG;
+        switch (words[0]) {
+            case "REGISTER": return processRegister(words);
+            case "LOOKUP": return processLookup(words);
+            default: return INVALID_MSG;
+        }
     }
 
-    static boolean loopCondition() {
-        return true;
+    private static String processRegister(String[] words) {
+        if (words.length != 3)
+            return INVALID_MSG;
+        //ValidIpAddressRegex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
+        //ValidHostnameRegex = "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$";
+        return Integer.toString(registerIP(words[1], words[2]));
     }
 
-    static int registerIP(String DNS, String IP) {
+    private static String processLookup(String[] words) {
+        if (words.length != 2)
+            return INVALID_MSG;
+        return lookupIP(words[1]);
+    }
+
+    private static int registerIP(String DNS, String IP) {
         if (lookupIP(DNS).equals(IP_NOT_FOUND)) {
             DNSTable.put(DNS, IP);
             return DNSTable.size();
@@ -38,7 +69,7 @@ public class Server {
         else return -1;
     }
 
-    static String lookupIP(String DNS) {
+    private static String lookupIP(String DNS) {
         String IP = DNSTable.get(DNS);
         if (IP == null)
             return IP_NOT_FOUND;

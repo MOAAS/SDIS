@@ -4,14 +4,25 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class Client {
+    private static int CLIENT_PORT = 8888;
+
     public static void main(String[] args) throws IOException {
-        System.out.println("Hello gamer!");
+        String hostName = "localhost";
+        int serverPort = 6969;
+        String message = "lookup gamer.gamer";
 
-        byte[] buf = "Hello gamer!".getBytes();
 
-        DatagramSocket socket = new DatagramSocket(8888);
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("localhost"), 6969);
+        byte[] buf = message.getBytes();
 
-        socket.send(packet);
+        DatagramSocket socket = new DatagramSocket(CLIENT_PORT);
+        DatagramPacket messagePacket = new DatagramPacket(buf, buf.length, InetAddress.getByName(hostName), serverPort);
+        DatagramPacket responsePacket = SuperUtils.makeEmptyPacket();
+
+
+        socket.send(messagePacket);
+        socket.receive(responsePacket);
+
+        System.out.println("Sent message: " + message);
+        System.out.println("Got reply: " + SuperUtils.packetToString(responsePacket));
     }
 }
