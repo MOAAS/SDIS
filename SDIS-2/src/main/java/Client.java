@@ -8,23 +8,23 @@ public class Client {
     private static int CLIENT_PORT = 8888;
 
     public static void main(String[] args) throws IOException {
-        //String hostName = "localhost";
-        //int serverPort = 6969;
-        String message = "lookup gamer.gamer";
-
-        String multicastAddress = "localhost";
+        // ** Args ** //
+        String multicastAddress = "224.0.0.0";
         int multicastPort = 1000;
+        String message = "register gamer.gamer 192.168.1.2";
+        // **  ** //
 
         // join group
         MulticastSocket multicastSocket = new MulticastSocket(multicastPort);
         multicastSocket.joinGroup(InetAddress.getByName(multicastAddress));
+        System.out.println("Successfully joined Multicast group: " + multicastAddress + ":" + multicastPort);
 
         // get ip and port
         DatagramPacket announcementPacket = SuperUtils.makeEmptyPacket();
         multicastSocket.receive(announcementPacket);
         String hostName = parseHostName(SuperUtils.packetToString(announcementPacket));
         int serverPort = parseServerPort(SuperUtils.packetToString(announcementPacket));
-        System.out.println(SuperUtils.packetToString(announcementPacket));
+        System.out.println("Received announcement: " + SuperUtils.packetToString(announcementPacket));
 
         // Send
         byte[] buf = message.getBytes();

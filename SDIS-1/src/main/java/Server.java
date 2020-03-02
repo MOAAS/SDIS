@@ -13,7 +13,7 @@ public class Server {
         int serverPort = 6969;
 
         DatagramPacket messagePacket = SuperUtils.makeEmptyPacket();
-        DatagramSocket socket = new DatagramSocket(serverPort, InetAddress.getByName("localhost"));
+        DatagramSocket socket = new DatagramSocket(serverPort);
 
         while (true) {
             SuperUtils.clearPacket(messagePacket);

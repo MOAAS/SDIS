@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.util.HashMap;
 
 public class Server {
@@ -10,15 +11,36 @@ public class Server {
     static final String INVALID_MSG = "INVALID_MSG";
 
     public static void main(String[] args) throws IOException {
+        // ** Args ** //
         int serverPort = 6969;
-
-        String multicastAddress = "localhost";
+        String multicastAddress = "224.0.0.0";
         int multicastPort = 1000;
+        // **  ** //
+
+        Thread announcementThread =  new Thread(() -> {
+            try {
+                InetAddress serverIP = InetAddress.getLocalHost();
+                String announcement = serverIP.getHostAddress() + ":" + serverPort;
+                while (true) {
+                    MulticastSocket multicastSocket = new MulticastSocket(multicastPort);
+                    DatagramPacket announcementPacket = new DatagramPacket(announcement.getBytes(), announcement.getBytes().length, InetAddress.getByName(multicastAddress), multicastPort);
+                    multicastSocket.send(announcementPacket);
+
+                    System.out.println("Sent announcement: " + announcement);
+                    Thread.sleep(5000);
+                }
+            }
+            catch (IOException | InterruptedException e) {
+                System.err.println("Error: " + e.getMessage());
+            }
+        });
+        announcementThread.start();
+
 
         DatagramPacket messagePacket = SuperUtils.makeEmptyPacket();
-        DatagramSocket socket = new DatagramSocket(serverPort, InetAddress.getByName("localhost"));
-
+        DatagramSocket socket = new DatagramSocket(serverPort);
         while (true) {
+
             SuperUtils.clearPacket(messagePacket);
             socket.receive(messagePacket);
             String message = SuperUtils.packetToString(messagePacket);
