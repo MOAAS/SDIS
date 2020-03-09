@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.HashMap;
 
+/*
 public class Server {
     static HashMap<String, String> DNSTable = new HashMap<>();
     static final String IP_NOT_FOUND = "NOT_FOUND";
@@ -101,3 +102,5 @@ public class Server {
         return IP;
     }
 }
+
+ */

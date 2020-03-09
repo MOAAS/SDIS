@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -8,26 +9,31 @@ public class Client {
     private static int CLIENT_PORT = 8888;
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        MulticastSocket MCCSocket = SuperUtils.joinMulticastGroup("224.0.0.0", 1000);
-        MulticastSocket MDBSocket = SuperUtils.joinMulticastGroup("225.0.0.0", 1000);
-        MulticastSocket MDRSocket = SuperUtils.joinMulticastGroup("226.0.0.0", 1000);
-
-
+        MulticastGroup MCCGroup = new MulticastGroup("224.0.0.0", 1000);
+        MulticastGroup MDBGroup = new MulticastGroup("225.0.0.0", 1100);
+        MulticastGroup MDRGroup = new MulticastGroup("226.0.0.0", 1200);
         while (true) {
-
-
-            double num = Math.random();
-            System.out.println(num);
-            if (num < 0.5) {
-                SuperUtils.sendToMulticast(MCCSocket, "Hello gamer");
+            if (Math.random() < 0.8) {
+                System.out.println("Sending message...");
+                MCCGroup.sendToGroup("Hello");
             }
             else {
-                DatagramPacket packet = SuperUtils.makeEmptyPacket();
-                MCCSocket.receive(packet);
-
-                System.out.println("LMAO " + SuperUtils.packetToString(packet));
+                String message = MCCGroup.receiveFromGroup();
+                System.out.println("Received message: " + message);
             }
             Thread.sleep(1000);
+
+
+            File epic;
+            // String[] chunks;
+            // faz mensagem
+            // envia envia envia
+
+            String chunkinteirodoficheiro;
+            // guardar focv
+
+
+
         }
 
         /*

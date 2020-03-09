@@ -4,7 +4,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 import java.util.Arrays;
-
+/*
 public class SuperUtils {
     public static String packetToString(DatagramPacket packet) {
         return  new String(packet.getData()).trim();
@@ -18,9 +18,6 @@ public class SuperUtils {
 
     public static void makePacket(MulticastSocket socket, String content) {
         try {
-            System.out.println(content.getBytes());
-            System.out.println(content.getBytes().length);
-            System.out.print(socket.joinGroup();
             DatagramPacket pakcet = new DatagramPacket(content.getBytes(), content.getBytes().length, socket.getInetAddress(), socket.getLocalPort());
             socket.send(pakcet);
         } catch (IOException e) {
@@ -39,3 +36,5 @@ public class SuperUtils {
         return multicastSocket;
     }
 }
+
+ */
