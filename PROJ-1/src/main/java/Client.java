@@ -7,6 +7,19 @@ import java.util.List;
 public class Client {
     private static int CLIENT_PORT = 8888;
 
+    private static String BACKUP_FOLDER = "files/backup1";
+
+    static void showChunkListStats(String name, List<Chunk> chunks) {
+        System.out.println("--- Stats for " + name + " chunks ---");
+
+        System.out.println("Num chunks: " + chunks.size());
+
+        for (int i = 0; i < chunks.size(); i++)
+            System.out.println("chunk " + i + ": " + chunks.get(i).toString());
+        System.out.println("--- --- --- ---");
+
+    }
+
     public static void main(String[] args) throws IOException, InterruptedException {
         MulticastGroup MCCGroup = new MulticastGroup("224.0.0.0", 1000);
         MulticastGroup MDBGroup = new MulticastGroup("225.0.0.0", 1100);
@@ -15,17 +28,22 @@ public class Client {
 
         List<Chunk> chunks1 = new SplitFile("files/file1.txt").split();
         List<Chunk> chunks2 = new SplitFile("files/file2.txt").split();
+        List<Chunk> chunks3 = new SplitFile("files/shrek.mp3").split();
 
-        System.out.println("Num chunks: " + chunks1.size());
-        System.out.println("chunk 0: " + chunks1.get(0).toString());
-        System.out.println("chunk 1: " + chunks1.get(1).toString());
-        System.out.println("chunk 2: " + chunks1.get(2).toString());
+        showChunkListStats("file1", chunks1);
+        showChunkListStats("file2", chunks2);
+        showChunkListStats("shrek", chunks3);
 
-        System.out.println("Num chunks: " + chunks2.size());
-        System.out.println("chunk 0: " + chunks2.get(0).toString());
-        System.out.println("chunk 1: " + chunks2.get(1).toString());
-        System.out.println("chunk 2: " + chunks2.get(2).toString());
+        chunks1.get(0).save(BACKUP_FOLDER);
+        chunks1.get(2).save(BACKUP_FOLDER);
 
+        chunks2.get(1).save(BACKUP_FOLDER);
+
+        chunks3.get(0).save(BACKUP_FOLDER);
+        chunks3.get(1).save(BACKUP_FOLDER);
+        chunks3.get(2).save(BACKUP_FOLDER);
+        chunks3.get(3).save(BACKUP_FOLDER);
+        chunks3.get(63).save(BACKUP_FOLDER);
 
 
 

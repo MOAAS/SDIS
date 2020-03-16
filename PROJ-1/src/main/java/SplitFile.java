@@ -34,6 +34,8 @@ public class SplitFile {
         }
 
         chunks.add(this.readChunk(inputStream, fileSizeBytes % CHUNK_SIZE, numFullChunks));
+
+        inputStream.close();
         return chunks;
     }
 

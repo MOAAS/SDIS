@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class Chunk {
     private final String fileID;
@@ -32,9 +34,20 @@ public class Chunk {
         return fileID;
     }
 
-    public void save(String backupFolder) {
-        //File fileFolder = backupFolder + "/" +
+    public void save(String backupFolderPath) {
+        File fileFolder = new File(backupFolderPath + "/" + this.fileID);
+        if (!fileFolder.exists()) {
+            fileFolder.mkdir();
+        }
 
+        try {
+            File chunkFile = new File(fileFolder.getPath() + "/" + this.chunkNo);
 
+            chunkFile.createNewFile();
+            FileOutputStream outputStream = new FileOutputStream(chunkFile, false);
+            outputStream.write(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
