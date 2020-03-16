@@ -1,9 +1,8 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Client {
     private static int CLIENT_PORT = 8888;
@@ -12,10 +11,30 @@ public class Client {
         MulticastGroup MCCGroup = new MulticastGroup("224.0.0.0", 1000);
         MulticastGroup MDBGroup = new MulticastGroup("225.0.0.0", 1100);
         MulticastGroup MDRGroup = new MulticastGroup("226.0.0.0", 1200);
+
+
+        List<Chunk> chunks1 = new SplitFile("files/file1.txt").split();
+        List<Chunk> chunks2 = new SplitFile("files/file2.txt").split();
+
+        System.out.println("Num chunks: " + chunks1.size());
+        System.out.println("chunk 0: " + chunks1.get(0).toString());
+        System.out.println("chunk 1: " + chunks1.get(1).toString());
+        System.out.println("chunk 2: " + chunks1.get(2).toString());
+
+        System.out.println("Num chunks: " + chunks2.size());
+        System.out.println("chunk 0: " + chunks2.get(0).toString());
+        System.out.println("chunk 1: " + chunks2.get(1).toString());
+        System.out.println("chunk 2: " + chunks2.get(2).toString());
+
+
+
+
+        /*
         while (true) {
-            if (Math.random() < 0.8) {
-                System.out.println("Sending message...");
-                MCCGroup.sendToGroup("Hello");
+            double num = Math.random();
+            if (num < 0.8) {
+                System.out.println("Sending message... " + num);
+                MCCGroup.sendToGroup(Double.toString(num));
             }
             else {
                 String message = MCCGroup.receiveFromGroup();
@@ -23,8 +42,6 @@ public class Client {
             }
             Thread.sleep(1000);
 
-
-            File epic;
             // String[] chunks;
             // faz mensagem
             // envia envia envia
@@ -35,6 +52,7 @@ public class Client {
 
 
         }
+
 
         /*
 
