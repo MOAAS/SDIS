@@ -113,10 +113,7 @@ public class Peer implements TestAppRemoteInterface {
         } catch (Exception e) {
             if (fileSplitter != null)
                 fileSplitter.close();
-            if (peerState.getBackupLog().hasFile(fileID)) {
-                deleteFile(filePath);
-                peerState.getBackupLog().removeFile(fileID);
-            }
+            peerState.getBackupLog().removeFile(fileID);
             ThrowError("Error backing up file: " + filePath + ". Error message: " + e.getMessage());
         }
     }
