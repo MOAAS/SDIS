@@ -1,14 +1,17 @@
+package Multicast;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.nio.charset.StandardCharsets;
 
 public class MulticastGroup {
     private int port;
     private InetAddress address;
     private MulticastSocket socket;
 
-    MulticastGroup(String address, int port) {
+    public MulticastGroup(String address, int port) {
         try {
             this.address = InetAddress.getByName(address);
             this.port = port;
@@ -19,8 +22,8 @@ public class MulticastGroup {
         }
     }
 
-    void sendToGroup(String content) {
-        DatagramPacket packet = new DatagramPacket(content.getBytes(), content.getBytes().length, address, port);
+    public void sendToGroup(String content) {
+        DatagramPacket packet = new DatagramPacket(content.getBytes(StandardCharsets.ISO_8859_1), content.getBytes().length, address, port);
         try {
             this.socket.send(packet);
         } catch (IOException e) {
@@ -28,11 +31,11 @@ public class MulticastGroup {
         }
     }
 
-    String receiveFromGroup() {
+    public String receiveFromGroup() {
         DatagramPacket packet = new DatagramPacket(new byte[65535], 65535);
         try {
             this.socket.receive(packet);
-            return new String(packet.getData()).trim();
+            return new String(packet.getData(), StandardCharsets.ISO_8859_1).substring(0, packet.getLength());
         } catch (IOException e) {
             return "";
         }
