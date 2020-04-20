@@ -68,7 +68,7 @@ public class Peer implements TestAppRemoteInterface {
     
     public void run() {
         new MulticastThread("MCCThread", this.peerID, peerState.getMCGroups().MCCGroup, this.peerState).start();
-        new MulticastThread("MDABThread", this.peerID, peerState.getMCGroups().MDBGroup, this.peerState).start();
+        new MulticastThread("MDBThread", this.peerID, peerState.getMCGroups().MDBGroup, this.peerState).start();
         new MulticastThread("MDRThread", this.peerID, peerState.getMCGroups().MDRGroup, this.peerState).start();
 
         new Thread(() -> {
@@ -85,8 +85,8 @@ public class Peer implements TestAppRemoteInterface {
 
     @Override
     public void backupFile(String filePath, int repDeg) throws Exception {
-        if (repDeg > 9) {
-            ThrowError("Replication degree must be lower than 10 (was " + repDeg + ")");
+        if (repDeg > 9 || repDeg < 0) {
+            ThrowError("Replication degree must be at least 0 and lower than 10 (was " + repDeg + ")");
         }
 
         File file = new File(this.peerFolderPath, filePath);

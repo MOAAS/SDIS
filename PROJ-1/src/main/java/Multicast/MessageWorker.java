@@ -101,10 +101,8 @@ public class MessageWorker implements Runnable, MessageProcessor {
 
     @Override
     public void processPutChunkMessage(PutChunkMessage message) {
-        if (this.putChunkWaitingRoom.containsKey(message.chunkID())) {
+        if (this.putChunkWaitingRoom.containsKey(message.chunkID()))
             this.putChunkWaitingRoom.put(message.chunkID(), true);
-            return;
-        }
 
         if (this.backupLog.hasFile(message.fileId)) {
             Log("Cannot store chunk for a file of which I am the original owner. FileID: " + message.fileId);
@@ -118,7 +116,7 @@ public class MessageWorker implements Runnable, MessageProcessor {
             return;
         }
 
-        if (this.peerState.availableCapacity() < chunk.size()) {
+        if (this.peerState.availableCapacity() < chunk.size() || this.peerState.getCapacity() == 0) {
             Log("Not enough storage space for chunk ( " + chunk.size() + " bytes). Available space: " + this.peerState.availableCapacity() + "/" + this.peerState.getCapacity());
             return;
         }

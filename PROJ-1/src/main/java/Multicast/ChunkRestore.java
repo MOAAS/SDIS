@@ -45,10 +45,11 @@ public class ChunkRestore {
                     }
                     break;
                 case Message.VERSION_ENHANCED:
-                    peerState.getMCGroups().MCCGroup.sendToGroup(new GetChunkMessage(peerState.getVersion(), peerID, chunkID.fileID, chunkID.chunkNo, InetAddress.getLocalHost().getHostAddress(), this.peerID % 65536).toString());
+                    int port = (this.peerID % 64000) + 1024;
+                    peerState.getMCGroups().MCCGroup.sendToGroup(new GetChunkMessage(peerState.getVersion(), peerID, chunkID.fileID, chunkID.chunkNo, InetAddress.getLocalHost().getHostAddress(), port).toString());
                     MulticastThread.sleep(waitingInterval);
                     try {
-                        recoverMessage = (ChunkMessage)MessageParser.parseMessage(TCPSocket.readAny(this.peerID, 65535));
+                        recoverMessage = (ChunkMessage)MessageParser.parseMessage(TCPSocket.readAny(port, 65535));
                         if (recoverMessage.chunkID().equals(this.chunkID)) {
                             Log("Successfully retrieved chunk: " + recoverMessage.getChunk());
                             return recoverMessage.getChunk();

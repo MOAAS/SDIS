@@ -23,7 +23,7 @@ public class MulticastGroup {
     }
 
     public void sendToGroup(String content) {
-        DatagramPacket packet = new DatagramPacket(content.getBytes(StandardCharsets.ISO_8859_1), content.getBytes().length, address, port);
+        DatagramPacket packet = new DatagramPacket(content.getBytes(StandardCharsets.ISO_8859_1), content.getBytes(StandardCharsets.ISO_8859_1).length, address, port);
         try {
             this.socket.send(packet);
         } catch (IOException e) {

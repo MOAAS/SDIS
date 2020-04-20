@@ -2,6 +2,7 @@ package Multicast;
 
 import Messages.Message;
 import Messages.MessageParser;
+import Messages.StoredMessage;
 import StateLogging.PeerState;
 
 import java.util.concurrent.Executors;
@@ -9,7 +10,8 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class MulticastThread extends Thread {
 
-    private static final ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(15);
+    private static final ScheduledExecutorService threadPoolStored = Executors.newScheduledThreadPool(10);
+    private static final ScheduledExecutorService threadPoolGeneral = Executors.newScheduledThreadPool(15);
 
 
     public MulticastThread(String threadName, int peerID, MulticastGroup group, PeerState peerState) {
@@ -23,9 +25,14 @@ public class MulticastThread extends Thread {
                     System.out.println(threadName + ": Invalid message syntax. Ignoring... ");
                     continue;
                 }
+                if (peerState.getVersion().equals(Message.VERSION_VANILLA) && message.version.equals(Message.VERSION_ENHANCED)) {
+                    System.out.println(threadName + ": I am not running version 1.1, Ignoring... ");
+                    continue;
+                }
                 if (message.senderId == peerID)
                     continue;
-                threadPool.execute(new Thread(new MessageWorker(message, peerID, peerState)));
+                ScheduledExecutorService threadPool = message instanceof StoredMessage ? threadPoolStored : threadPoolGeneral;
+                threadPool.execute(new MessageWorker(message, peerID, peerState));
             }
         });
     }
